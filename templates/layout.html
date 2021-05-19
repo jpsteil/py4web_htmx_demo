@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="[[=URL('static', 'images/favicon/favicon.ico')]]" type="image/x-icon">
+    <link rel="apple-touch-icon" href="[[=URL('static', 'images/favicon/apple-touch-icon.png')]]"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+          integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+          crossorigin="anonymous"/>
+    <link rel="stylesheet" href="[[=URL('static', 'css', 'htmx_demo.css')]]">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css"
+          integrity="sha512-ADrqa2PY1TZtb/MoLZIZu/Z/LlPaWQeDMBV73EMwjGam43/JJ5fqW38Rq8LJOVGCDfrJeOMS3Q/wRUVzW5DkjQ=="
+          crossorigin="anonymous"/>
+    <style>.py4web-validation-error {
+        margin-top: -16px;
+        font-size: 0.8em;
+        color: red
+    }</style>
+    <title>py4web/HTMX Demo</title>
+    [[block page_head]]<!-- individual pages can customize header here --> [[end]]
+</head>
+<body>
+<header>
+    <div class="box-shadow-y">
+        <div class="container">
+            <nav class="navbar">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <a href="[[=URL('index')]]" title="HTMX Demo">
+                            <img src="[[=URL('static', 'images/mug.png')]]" class="mt-2 ml-5 mb-2" style="max-height: 70px; max-width: 70px;"></img>
+                        </a>
+                        <span class="navbar-burger burger" data-target="navbarMenu">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </div>
+                    <div id="navbarMenu" class="navbar-menu" style="vertical-align: top;">
+                        <div class="navbar-end">
+                            <a class="navbar-item [[ ='is-active' if request.path == URL('index') else '' ]]" href="[[=URL('index')]]">Home</a>
+                            <a class="navbar-item [[ ='is-active' if request.path == URL('products') else '' ]]" href="[[=URL('products')]]">Products</a>
+                            <a class="navbar-item [[ ='is-active' if request.path == URL('customers') else '' ]]" href="[[=URL('customers')]]">Customers</a>
+                            <a class="navbar-item [[ ='is-active' if request.path == URL('orders') else '' ]]" href="[[=URL('orders')]]">Orders</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+<!-- contect injected by extending page -->
+<div class="container" style="min-height: 1200px; padding-top: 1rem;">
+    [[include]]
+</div>
+</body>
+<!-- You've gotta have utils.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.3.2"></script>
+<script src="js/utils.js"></script>
+<script src="js/compass.js"></script>
+[[block page_scripts]]<!-- individual pages can add scripts here --> [[end]]
+</html>

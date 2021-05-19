@@ -1,0 +1,166 @@
+timestamp: 2021-04-14T11:50:43.203123
+CREATE TABLE "auth_user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "username" CHAR(512) UNIQUE,
+    "email" CHAR(512) UNIQUE,
+    "password" CHAR(512),
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "sso_id" CHAR(512),
+    "action_token" CHAR(512),
+    "last_password_change" TIMESTAMP,
+    "past_passwords_hash" TEXT
+);
+success!
+timestamp: 2021-04-14T11:50:43.216494
+CREATE TABLE "auth_user_tag_groups"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "path" CHAR(512),
+    "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2021-04-14T11:50:43.306302
+CREATE TABLE "location"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" CHAR(512)
+);
+success!
+timestamp: 2021-04-14T11:50:43.314624
+CREATE TABLE "product"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" CHAR(512)
+);
+success!
+timestamp: 2021-04-14T11:50:43.323080
+CREATE TABLE "product_location"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "product" INTEGER REFERENCES "product" ("id") ON DELETE CASCADE  ,
+    "location" INTEGER REFERENCES "location" ("id") ON DELETE CASCADE  ,
+    "price" DOUBLE
+);
+success!
+timestamp: 2021-04-14T11:50:43.331278
+CREATE TABLE "customer"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" CHAR(512),
+    "city" CHAR(512),
+    "state" CHAR(512)
+);
+success!
+timestamp: 2021-04-14T11:50:43.348998
+CREATE TABLE "order"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "customer" INTEGER REFERENCES "customer" ("id") ON DELETE CASCADE  ,
+    "total" DOUBLE
+);
+success!
+timestamp: 2021-04-14T11:50:43.357223
+CREATE TABLE "order_line"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "order" INTEGER REFERENCES "order" ("id") ON DELETE CASCADE  ,
+    "product_location" INTEGER REFERENCES "product_location" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2021-04-14T11:51:24.143050
+ALTER TABLE "order_line" ADD "price" DOUBLE;
+timestamp: 2021-04-14T11:51:24.149154
+ALTER TABLE "order_line" ADD "quantity" DOUBLE;
+success!
+timestamp: 2021-04-15T08:32:57.793918
+ALTER TABLE "product" ADD "price" DOUBLE;
+success!
+timestamp: 2021-04-15T08:32:57.802135
+ALTER TABLE "order_line" ADD "product" INTEGER REFERENCES "product" ("id") ON DELETE CASCADE  ;
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
