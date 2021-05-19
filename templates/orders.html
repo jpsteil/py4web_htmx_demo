@@ -31,7 +31,7 @@
             <div style="background-color: whitesmoke; padding: 1rem; padding-bottom: 2rem;">
                 <h2 class="subtitle">Line Items</h2>
                 <div id="htmx-target">
-                    <div hx-get="[[=URL('order_lines', vars=dict(parent_id=parent_id)) ]]" hx-trigger="load" hx-target="this">
+                    <div hx-get="[[=URL('order_lines', vars=dict(parent_id=parent_id)) ]]" hx-trigger="load" hx-target="#htmx-target">
                         <img class="htmx-indicator" src="[[=URL('static', 'images/spinner.gif')]]" height="20"/>
                     </div>
                 </div>
