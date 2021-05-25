@@ -1,0 +1,27 @@
+[[=form.custom.begin]]
+[[if form.readonly and edit_button:]]
+    <div class="is-pulled-right pb-2">
+        [[=edit_button]]
+    </div>
+[[pass]]
+<table class="table is-bordered is-fullwidth">
+    [[for field in form_fields: ]]
+        <tr>
+            <td>
+                <label for="[[=field._tablename if '_tablename' in field else 'no_table']]_[[=field]]" class="label details-label">
+                    [[=form.custom['labels'][field] ]]
+                </label>
+            </td>
+            <td>
+                [[=form.custom.wrapped_widgets[field] ]]
+                [[if field in form.custom['errors']: ]]
+                    <p class="help is-danger">[[=form.custom['errors'][field] ]]</p>
+                [[pass]]
+            </td>
+        </tr>
+    [[pass]]
+</table>
+[[if not form.readonly:]]
+    [[=form.custom.submit]] [[=SPAN(*form.param.sidecar)]]
+[[pass]]
+[[=form.custom.end]]

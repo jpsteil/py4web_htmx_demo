@@ -1,0 +1,14 @@
+<script type="text/javascript">
+    htmx.on('htmx:load', function(evt) {
+        if (document.querySelector('#[[=tablename]]_[[=fieldname]]_autocomplete')) {
+            document.querySelector('#[[=tablename]]_[[=fieldname]]_autocomplete').onkeydown = check_[[=tablename]]_[[=fieldname]]_enter_key;
+        }
+    });
+</script>
+<select name="[[=fk_table]]" onchange="select_order_line_product(this)" style="z-index: 40; position: absolute;" id="[[=tablename]]_[[=fieldname]]_autocomplete" size="[[=15 if len(data) > 15 else len(data) if len(data) > 0 else 5]]">
+    [[for row in data:]]
+        <option value="[[=row.id]]" onclick="select_[[=fk_table]](this);">
+            [[=data_label % row]]
+        </option>
+    [[pass]]
+</select>

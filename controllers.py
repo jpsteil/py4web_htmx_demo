@@ -1,4 +1,5 @@
 import base64
+import csv
 from functools import reduce
 
 from pydal.validators import IS_IN_DB
@@ -203,3 +204,17 @@ def orders(path=None):
         parent_id = grid.record_id
 
     return dict(grid=grid, parent_id=parent_id)
+
+
+def build_beers():
+    with open("/home/jim/Documents/beers.csv", "r") as f:
+        for x, line in enumerate(csv.reader(f)):
+            if x > 0:
+                beer = line[0]
+                price = line[1]
+
+                print(beer, price)
+
+                db.product.insert(name=beer, price=price)
+
+    db.commit()

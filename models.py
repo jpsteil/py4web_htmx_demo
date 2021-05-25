@@ -5,6 +5,8 @@ This file defines the database models
 from .common import db, Field
 from pydal.validators import *
 
+from .htmx import autocomplete_widget
+
 db.define_table(
     "product",
     Field("name"),
@@ -35,6 +37,8 @@ db.define_table(
         "product",
         "reference product",
         requires=IS_IN_DB(db, "product.id", "%(name)s", zero=".."),
+        widget=autocomplete_widget,
+        _autocomplete_search_fields=["name"],
     ),
     Field("price", "decimal(9,2)"),
     Field("quantity", "decimal(7,2)"),
