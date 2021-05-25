@@ -64,36 +64,13 @@ def autocomplete_widget(field, values_dict):
     control.append(
         SCRIPT(
             """
-    htmx.on('htmx:load', function(evt) {
-        console.log('htmx loaded')
-        function select_%(fk_table)s(v) {
-            document.querySelector('input#%(table)s_%(field)s').value = v.value
-            document.querySelector('#%(table)s_%(field)s_search').value = v.label
-    
-            htmx.remove(htmx.find('#%(table)s_%(field)s_autocomplete'))
-        }
-        document.querySelector('#%(table)s_%(field)s_search').addEventListener('focusout', (event) => {
-            if (event.relatedTarget === null || event.relatedTarget.id !== '%(table)s_%(field)s_autocomplete') {
-                if (htmx.find('#%(table)s_%(field)s_autocomplete') !== null) {
-                    htmx.remove(htmx.find('#%(table)s_%(field)s_autocomplete'))
-                }
-            }
-        })
+    htmx.onLoad(function(elt) {
         document.querySelector('#%(table)s_%(field)s_search').onkeydown = check_%(table)s_%(field)s_down_key;
-    
+        \n
         function check_%(table)s_%(field)s_down_key(e) {
             if (e.keyCode == '40') {
                 document.querySelector('#%(table)s_%(field)s_autocomplete').focus();
                 document.querySelector('#%(table)s_%(field)s_autocomplete').selectedIndex = 0;
-            }
-        }
-        function check_%(table)s_%(field)s_enter_key(e) {
-            if (e.key === 'Enter' || e.keyCode == '13') {
-                var v = {
-                    'value': this.value,
-                    'label': document.querySelector('#%(table)s_%(field)s_autocomplete :checked').innerHTML.trim()
-                }
-                select_%(fk_table)s(v);
             }
         }
     })
@@ -101,8 +78,6 @@ def autocomplete_widget(field, values_dict):
             % {
                 "table": tablename,
                 "field": field.name,
-                "fk_table": field.requires.ktable,
-                "fk_field": field.requires.kfield,
             }
         )
     )

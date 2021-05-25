@@ -1,13 +1,29 @@
 <script type="text/javascript">
     htmx.on('htmx:load', function(evt) {
         if (document.querySelector('#[[=tablename]]_[[=fieldname]]_autocomplete')) {
-            document.querySelector('#[[=tablename]]_[[=fieldname]]_autocomplete').onkeydown = check_[[=tablename]]_[[=fieldname]]_enter_key;
+            document.querySelector('#[[=tablename]]_[[=fieldname]]_autocomplete').onkeydown = function (e) {
+                if (e.key === 'Enter' || e.keyCode == '13') {
+                    document.querySelector('input#[[=tablename]]_[[=fieldname]]').value = this.value;
+                    document.querySelector('#[[=tablename]]_[[=fieldname]]_search').value = document.querySelector('#[[=tablename]]_[[=fieldname]]_autocomplete :checked').innerHTML.trim();
+                    htmx.remove(htmx.find('#[[=tablename]]_[[=fieldname]]_autocomplete'));
+                }
+            }
         }
+
+        document.querySelector('#[[=tablename]]_[[=fieldname]]_search').addEventListener('focusout', (event) => {
+            if (event.relatedTarget === null || event.relatedTarget.id !== '[[=tablename]]_[[=fieldname]]_autocomplete') {
+                if (htmx.find('#[[=tablename]]_[[=fieldname]]_autocomplete') !== null) {
+                    htmx.remove(htmx.find('#[[=tablename]]_[[=fieldname]]_autocomplete'));
+                }
+            }
+        });
     });
 </script>
-<select name="[[=fk_table]]" onchange="select_order_line_product(this)" style="z-index: 40; position: absolute;" id="[[=tablename]]_[[=fieldname]]_autocomplete" size="[[=15 if len(data) > 15 else len(data) if len(data) > 0 else 5]]">
+<select name="[[=fk_table]]" style="z-index: 40; position: absolute;" id="[[=tablename]]_[[=fieldname]]_autocomplete" size="[[=15 if len(data) > 15 else len(data) if len(data) > 0 else 5]]">
     [[for row in data:]]
-        <option value="[[=row.id]]" onclick="select_[[=fk_table]](this);">
+        <option value="[[=row.id]]" onclick="document.querySelector('input#[[=tablename]]_[[=fieldname]]').value = this.value;
+            document.querySelector('#[[=tablename]]_[[=fieldname]]_search').value = this.label;
+            htmx.remove(htmx.find('#[[=tablename]]_[[=fieldname]]_autocomplete'));">
             [[=data_label % row]]
         </option>
     [[pass]]
