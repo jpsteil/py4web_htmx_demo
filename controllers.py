@@ -1,11 +1,10 @@
-import base64
 import csv
 from functools import reduce
 
-from pydal.validators import IS_IN_DB
+from yatl.helpers import TAG
 
-from py4web import action, response, request, URL, Field, redirect
-from py4web.utils.form import FormStyleBulma, Form
+from py4web import action, URL
+from py4web.utils.form import FormStyleBulma
 from py4web.utils.grid import (
     Grid,
     get_parent,
@@ -16,10 +15,9 @@ from .common import (
     db,
     session,
     auth,
-    unauthenticated,
 )
-from ..connect4.lib.helpers import BUTTON
-import datetime
+
+BUTTON = TAG.button
 
 
 @action("index", method=["POST", "GET"])
