@@ -3,8 +3,8 @@ from functools import reduce
 
 from yatl.helpers import TAG
 
-from py4web import action, URL
-from py4web.utils.form import FormStyleBulma
+from py4web import action, URL, request
+from py4web.utils.form import FormStyleBulma, FormStyleFactory
 from py4web.utils.grid import (
     Grid,
     get_parent,
@@ -16,6 +16,7 @@ from .common import (
     session,
     auth,
 )
+from .htmx import NewHtmxAutocompleteWidget
 
 BUTTON = TAG.button
 
@@ -135,6 +136,13 @@ def order_lines(path=None):
         db.order_line.price.readable = False
         db.order_line.price.writable = False
 
+    formstyle = FormStyleFactory()
+    formstyle.classes = FormStyleBulma.classes
+    formstyle.class_inner_exceptions = FormStyleBulma.class_inner_exceptions
+    formstyle.widgets["product"] = NewHtmxAutocompleteWidget(
+        url=URL("product_autocomplete"), order_id=order_id
+    )
+
     grid = Grid(
         path,
         fields=[
@@ -153,7 +161,7 @@ def order_lines(path=None):
         auto_process=False,
         rows_per_page=5,
         grid_class_style=GridClassStyleBulma,
-        formstyle=FormStyleBulma,
+        formstyle=formstyle,
         details=False,
         include_action_button_text=False,
     )
@@ -216,3 +224,47 @@ def build_beers():
                 db.product.insert(name=beer, price=price)
 
     db.commit()
+
+
+@action(
+    "product_autocomplete",
+    method=["GET", "POST"],
+)
+@action.uses(
+    session,
+    db,
+    "htmx/autocomplete.html",
+)
+def product_autocomplete():
+    tablename = request.params.tablename
+    fieldname = request.params.fieldname
+    order_id = request.params.order_id
+
+    field = db[tablename][fieldname]
+    data = []
+
+    fk_table = None
+
+    if field and field.requires:
+        fk_table = field.requires.ktable
+        fk_field = field.requires.kfield
+
+        queries = []
+        products_already_on_order = db(db.order_line.order == order_id)._select(
+            db.order_line.product
+        )
+        queries.append(~db.product.id.belongs(products_already_on_order))
+        queries.append(
+            db.product.name.contains(request.params["order_line_product_search"])
+        )
+        query = reduce(lambda a, b: (a & b), queries)
+
+        data = db(query).select(orderby=field.requires.orderby)
+
+    return dict(
+        data=data,
+        tablename=tablename,
+        fieldname=fieldname,
+        fk_table=fk_table,
+        data_label=field.requires.label,
+    )

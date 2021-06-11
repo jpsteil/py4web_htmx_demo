@@ -37,7 +37,7 @@ db.define_table(
         "product",
         "reference product",
         requires=IS_IN_DB(db, "product.id", "%(name)s", zero=".."),
-        widget=autocomplete_widget,
+        # widget=autocomplete_widget,
         _autocomplete_search_fields=["name"],
     ),
     Field("price", "decimal(9,2)"),
