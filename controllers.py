@@ -83,10 +83,10 @@ def customer_orders(path=None):
         rows_per_page=5,
         grid_class_style=GridClassStyleBulma,
         formstyle=FormStyleBulma,
-        create=False,
-        details=False,
-        editable=False,
-        deletable=False,
+        create=True,
+        details=True,
+        editable=True,
+        deletable=True,
         include_action_button_text=False,
     )
 
