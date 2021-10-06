@@ -36,21 +36,3 @@
         </div>
     [[pass]]
 </div>
-
-<div class="container">
-    [[if grid.action in ['details', 'edit']:]]
-    <div class="columns">
-        <div class="column is-6">
-            [[form = grid.render()]]
-            [[=form]]
-        </div>
-    </div>
-    [[else:]]
-        [[=grid.render()]]
-        <div class="section">
-            <div class="is-pulled-right">
-                <h3 class="subtitle">Total: $[[=total if total else '0.00']]</h3>
-            </div>
-        </div>
-    [[pass]]
-</div>
