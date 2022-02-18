@@ -23,14 +23,24 @@ BUTTON = TAG.button
 
 @action("index", method=["POST", "GET"])
 @action("index/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, "index.html")
+@action.uses(
+    "index.html",
+    session,
+    db,
+    auth,
+)
 def index(path=None):
     return dict()
 
 
 @action("customers", method=["POST", "GET"])
 @action("customers/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, "customers.html")
+@action.uses(
+    "customers.html",
+    session,
+    db,
+    auth,
+)
 def customers(path=None):
     grid = Grid(
         path,
@@ -49,7 +59,12 @@ def customers(path=None):
 
 @action("customer_orders", method=["POST", "GET"])
 @action("customer_orders/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, "customer_orders.html")
+@action.uses(
+    "customer_orders.html",
+    session,
+    db,
+    auth,
+)
 def customer_orders(path=None):
     #  set the default
     customer_id = get_parent(
@@ -98,7 +113,12 @@ def customer_orders(path=None):
 
 @action("products", method=["POST", "GET"])
 @action("products/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, "grid.html")
+@action.uses(
+    "grid.html",
+    session,
+    db,
+    auth,
+)
 def products(path=None):
     grid = Grid(
         path,
@@ -114,7 +134,12 @@ def products(path=None):
 
 @action("order_lines", method=["POST", "GET"])
 @action("order_lines/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, "order_lines.html")
+@action.uses(
+    "order_lines.html",
+    session,
+    db,
+    auth,
+)
 def order_lines(path=None):
     #  set the default
     order_id = get_parent(
@@ -181,7 +206,12 @@ def order_lines(path=None):
 
 @action("orders", method=["POST", "GET"])
 @action("orders/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, "orders.html")
+@action.uses(
+    "orders.html",
+    session,
+    db,
+    auth,
+)
 def orders(path=None):
     left = db.customer.on(db.order.customer == db.customer.id)
 
@@ -231,9 +261,9 @@ def build_beers():
     method=["GET", "POST"],
 )
 @action.uses(
+    "htmx/autocomplete.html",
     session,
     db,
-    "htmx/autocomplete.html",
 )
 def product_autocomplete():
     tablename = request.params.tablename
