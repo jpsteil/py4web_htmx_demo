@@ -5,12 +5,7 @@ from yatl.helpers import TAG
 
 from py4web import action, URL, request
 from py4web.utils.form import FormStyleBulma, FormStyleFactory
-from py4web.utils.grid import (
-    Grid,
-    get_parent,
-    GridClassStyleBulma,
-    AttributesPluginHtmx,
-)
+from py4web.utils.grid import Grid, get_parent, GridClassStyleBulma
 from .common import (
     db,
     session,
@@ -21,29 +16,26 @@ from .htmx import NewHtmxAutocompleteWidget
 BUTTON = TAG.button
 
 
-@action("index", method=["POST", "GET"])
-@action("index/<path:path>", method=["POST", "GET"])
+@action("index")
 @action.uses(
     "index.html",
     session,
     db,
     auth,
 )
-def index(path=None):
+def index():
     return dict()
 
 
-@action("customers", method=["POST", "GET"])
-@action("customers/<path:path>", method=["POST", "GET"])
+@action("customers")
 @action.uses(
     "customers.html",
     session,
     db,
     auth,
 )
-def customers(path=None):
+def customers():
     grid = Grid(
-        path,
         query=reduce(lambda a, b: (a & b), [db.customer.id > 0]),
         orderby=[db.customer.name],
         details=False,
@@ -51,26 +43,22 @@ def customers(path=None):
         formstyle=FormStyleBulma,
     )
     parent_id = None
-    if grid.action in ["details", "edit"]:
+    if grid.mode in ["details", "edit"]:
         parent_id = grid.record_id
 
     return dict(grid=grid, parent_id=parent_id)
 
 
-@action("customer_orders", method=["POST", "GET"])
-@action("customer_orders/<path:path>", method=["POST", "GET"])
+@action("customer_orders")
 @action.uses(
     "customer_orders.html",
     session,
     db,
     auth,
 )
-def customer_orders(path=None):
+def customer_orders():
     #  set the default
-    customer_id = get_parent(
-        path,
-        parent_field=db.order.customer,
-    )
+    customer_id = get_parent(parent_field=db.order.customer)
     db.order.customer.default = customer_id
 
     #  get order total
@@ -80,12 +68,7 @@ def customer_orders(path=None):
         .first()[db.order.total.sum()]
     )
 
-    # if path and path.split("/")[0] in ["new", "details", "edit"]:
-    #    db.order_line.price.readable = False
-    #    db.order_line.price.writable = False
-
     grid = Grid(
-        path,
         fields=[db.order.id, db.order.total],
         show_id=True,
         headings=["ORDER #", "TOTAL"],
@@ -104,24 +87,20 @@ def customer_orders(path=None):
         deletable=True,
         include_action_button_text=False,
     )
-
-    grid.attributes_plugin = AttributesPluginHtmx("#htmx-target")
     grid.process()
 
     return dict(grid=grid, total=total)
 
 
-@action("products", method=["POST", "GET"])
-@action("products/<path:path>", method=["POST", "GET"])
+@action("products")
 @action.uses(
     "grid.html",
     session,
     db,
     auth,
 )
-def products(path=None):
+def products():
     grid = Grid(
-        path,
         query=reduce(lambda a, b: (a & b), [db.product.id > 0]),
         orderby=[db.product.name],
         details=False,
@@ -132,20 +111,16 @@ def products(path=None):
     return dict(grid=grid)
 
 
-@action("order_lines", method=["POST", "GET"])
-@action("order_lines/<path:path>", method=["POST", "GET"])
+@action("order_lines")
 @action.uses(
     "order_lines.html",
     session,
     db,
     auth,
 )
-def order_lines(path=None):
+def order_lines():
     #  set the default
-    order_id = get_parent(
-        path,
-        parent_field=db.order_line.order,
-    )
+    order_id = get_parent(parent_field=db.order_line.order)
     db.order_line.order.default = order_id
 
     left = db.product.on(db.order_line.product == db.product.id)
@@ -157,9 +132,9 @@ def order_lines(path=None):
         .first()[db.order_line.price.sum()]
     )
 
-    if path and path.split("/")[0] in ["new", "details", "edit"]:
+    if request.query.get("id"):
         db.order_line.price.readable = False
-        db.order_line.price.writable = False
+    db.order_line.price.writable = False
 
     formstyle = FormStyleFactory()
     formstyle.classes = FormStyleBulma.classes
@@ -169,7 +144,6 @@ def order_lines(path=None):
     )
 
     grid = Grid(
-        path,
         fields=[
             db.product.name,
             db.order_line.quantity,
@@ -191,7 +165,6 @@ def order_lines(path=None):
         include_action_button_text=False,
     )
 
-    grid.attributes_plugin = AttributesPluginHtmx("#htmx-target")
     attrs = {
         "_hx-get": URL("order_lines", vars=dict(parent_id=order_id)),
         "_class": "button is-default",
@@ -204,26 +177,24 @@ def order_lines(path=None):
     return dict(grid=grid, total=total)
 
 
-@action("orders", method=["POST", "GET"])
-@action("orders/<path:path>", method=["POST", "GET"])
+@action("orders")
 @action.uses(
     "orders.html",
     session,
     db,
     auth,
 )
-def orders(path=None):
+def orders():
     left = db.customer.on(db.order.customer == db.customer.id)
 
     show_id = True
-    if path and path.split("/")[0] in ["details", "edit"]:
+    if request.query.get("id"):
         db.order.total.readable = False
         show_id = False
 
     db.order.total.writable = False
 
     grid = Grid(
-        path,
         fields=[db.order.id, db.customer.name, db.order.total],
         show_id=show_id,
         headings=["ORDER #", "CUSTOMER", "TOTAL"],
@@ -236,7 +207,7 @@ def orders(path=None):
     )
 
     parent_id = None
-    if grid.action in ["details", "edit"]:
+    if grid.mode in ["details", "edit"]:
         parent_id = grid.record_id
 
     return dict(grid=grid, parent_id=parent_id)
