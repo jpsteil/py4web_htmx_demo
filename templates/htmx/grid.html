@@ -1,33 +1,3 @@
-[[if grid.action == 'select':]]
-<script type="text/javascript">
-    window.addEventListener("load",function() {
-        var form = document.forms[0];
-        if (form != null) {
-            form.addEventListener("submit", function (e1) {
-                e1.preventDefault();
-                var action = new URL(form.action);
-                for (var i = 0; i < form.elements.length; i++) {
-                    var e = form.elements[i];
-                    if (e.name.substring(0, 3) === 'sq_') {
-                        action.searchParams.set(encodeURIComponent(e.name), encodeURIComponent(e.value));
-                    }
-                }
-                form.action = action
-                form.submit();
-            });
-        }
-    });
-</script>
-[[pass]]
 <div class="container">
-    [[if grid.action in ['details', 'edit']:]]
-    <div class="columns">
-        <div class="column">
-            [[form = grid.render()]]
-            [[=form]]
-        </div>
-    </div>
-    [[else:]]
-        [[=grid.render()]]
-    [[pass]]
+    [[=grid.render()]]
 </div>

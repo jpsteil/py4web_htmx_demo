@@ -306,7 +306,7 @@ Q.trap_form = function (action, elem_id) {
     Q('#' + elem_id + ' form:not(.no-form-trap)').forEach(function (form) {
         var target = form.dataset['component_target'] || elem_id;
         form.dataset['component_target'] = target;
-        var url = form.action;
+        var url = form.mode;
         if (url === '' || url === '#' || url === void 0) url = action;
         var clickable = 'input[type=submit], input[type=image], button[type=submit], button:not([type])';        
         form.querySelectorAll(clickable).forEach(function (elem) {

@@ -1,46 +1,10 @@
-[[if grid.action == 'select':]]
-<script type="text/javascript">
-    window.addEventListener("load",function() {
-        var form = document.forms[0];
-        if (form != null) {
-            form.addEventListener("submit", function (e1) {
-                e1.preventDefault();
-                var action = new URL(form.action);
-                for (var i = 0; i < form.elements.length; i++) {
-                    var e = form.elements[i];
-                    if (e.name.substring(0, 3) === 'sq_') {
-                        action.searchParams.set(encodeURIComponent(e.name), encodeURIComponent(e.value));
-                    }
-                }
-                form.action = action
-                form.submit();
-            });
-        }
-    });
-</script>
-[[pass]]
-<div class="container">
-    [[if grid.action in ['details', 'edit']:]]
-    <div class="columns">
-        <div class="column is-6">
-            [[form = grid.render()]]
-            [[=form]]
-            <div style="background-color: whitesmoke; padding: 1rem; padding-bottom: 2rem;">
-                <h2 class="subtitle">Line Items</h2>
-                <div id="htmx-target">
-                    <div hx-get="[[=URL('order_lines', vars=dict(parent_id=parent_id)) ]]" hx-trigger="load" hx-target="#htmx-target">
-                        <img class="htmx-indicator" src="[[=URL('static', 'images/spinner.gif')]]" height="20"/>
-                    </div>
-                </div>
-            </div>
+<div class="container" hx-boost="true">
+    [[=grid.render()]]
+    [[if grid.mode == "select":]]
+    <div class="section">
+        <div class="is-pulled-right">
+            <h3 class="subtitle">Total: $[[=total]]</h3>
         </div>
     </div>
-    [[else:]]
-        [[=grid.render()]]
-        <div class="section">
-            <div class="is-pulled-right">
-                <h3 class="subtitle">Total: $[[=total]]</h3>
-            </div>
-        </div>
     [[pass]]
 </div>
